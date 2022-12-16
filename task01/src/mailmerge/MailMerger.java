@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class MailMerger {
+public class MailMerger implements Runnable {
 
     private String fileToRead;
     private String fileToWrite;
@@ -27,6 +27,13 @@ public class MailMerger {
     public MailMerger(String[] args) {
         this.fileToRead = args[0];
         this.fileToWrite = args[1];
+    }
+
+    @Override
+    public void run() {
+        readFile1();
+        readFile2();
+        outputFiles();
     }
 
     // method to read csv file
