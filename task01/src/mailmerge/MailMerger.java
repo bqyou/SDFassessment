@@ -23,21 +23,27 @@ public class MailMerger {
     private List<Map<String, String>> data = new LinkedList<Map<String, String>>();
     private String templateString;
 
+    // constructor for mailmerger using args from command line
     public MailMerger(String[] args) {
         this.fileToRead = args[0];
         this.fileToWrite = args[1];
     }
 
+    // method to read csv file
     public void readFile1() {
         Path p = Paths.get(fileToRead);
         File file = p.toFile();
         List<Map<String, String>> data = new LinkedList<Map<String, String>>();
         try {
+
+            // read file
             Reader r = new FileReader(file);
             BufferedReader br = new BufferedReader(r);
             String firstLine = br.readLine();
             String[] categories = firstLine.split(",");
             String line;
+
+            // adding each row of data as a map into data linkedlist
             while (null != (line = br.readLine())) {
                 Map<String, String> newEntry = new HashMap<String, String>();
                 String[] entryArray = line.split(",");
@@ -58,9 +64,12 @@ public class MailMerger {
         this.data = data;
     }
 
+    // method to read template file to obtain the template string
     public void readFile2() {
         Path p = Paths.get(fileToWrite);
         File file = p.toFile();
+
+        // using stringbuilder to build the string
         StringBuilder sb = new StringBuilder();
         try {
             Reader r = new FileReader(file);
@@ -86,19 +95,27 @@ public class MailMerger {
 
     }
 
+    // method to outputfiles (replace placeholder with actual values and output)
     public void outputFiles() {
+        // loop through the list for each rows of data
         for (Integer i = 0; i < data.size(); i++) {
             Map<String, String> first = data.get(i);
             String finalString = templateString;
+            // loop through each keyset to replace all placeholders with value
             for (String variable : first.keySet()) {
                 String toReplace = "<<%s>>".formatted(variable);
                 finalString = finalString.replace(toReplace, first.get(variable));
             }
+            // replacing \n to form newlines
+            finalString = finalString.replaceAll("\\\\n", "\n");
+            // output file name
             String outputFilename = "%s-%d.txt".formatted(fileToRead.replaceAll(".csv", ""), i + 1);
+            // write file
             writeFiles(outputFilename, finalString);
         }
     }
 
+    // method to write file
     public void writeFiles(String fileName, String content) {
         try {
             Writer w = new FileWriter(fileName);

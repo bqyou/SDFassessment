@@ -8,5 +8,6 @@ public class Main {
         merger.readFile1();
         merger.readFile2();
         merger.outputFiles();
+
     }
 }
